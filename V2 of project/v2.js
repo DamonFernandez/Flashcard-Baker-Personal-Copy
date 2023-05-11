@@ -77,7 +77,7 @@ function createClearButton() {
             flashCardArray[0] = templateFlashCard;
 
             let rootFlashCard = document.getElementById("flashCardTableRow0");
-            while(rootFlashCard.firstChild){
+            while (rootFlashCard.firstChild) {
                 rootFlashCard.removeChild(rootFlashCard.firstChild);
 
             }
@@ -127,38 +127,13 @@ function createTableStructure() {
     backTableHeading.innerHTML = "Back";
     headingTableRow.appendChild(backTableHeading);
 }
-function createDeleteFlashCardArrayButton() {
-    const deleteFlashCardArrayButton = document.createElement("button");
-    deleteFlashCardArrayButton.innerText = "deleteFlashCardArrayButton";
 
-
-
-    deleteFlashCardArrayButton.addEventListener("click", function () {
-        let blankFlashCard = flashCard("", "");
-        for (let i = 0; i < 100; i++) {
-
-            flashCardArray[i] = blankFlashCard;
-
-        }
-        console.table(flashCardArray)
-    }
-    )
-    let buttonContainer = document.getElementById("buttonContainer");
-
-    buttonContainer.appendChild(deleteFlashCardArrayButton)
-
-
-}
 function flashCard(front, back) {
     this.front = front;
     this.back = back;
 }
 
 
-function replaceNewlinesWithBr(text) {
-    // GPT made :(((((((((((())))))))))))
-    return text.replace(/(?:\r\n|\r|\n)/g, '<br>');
-}
 
 
 function createCSV(flashCardArray) {
@@ -174,10 +149,12 @@ function createCSV(flashCardArray) {
     for (let i = 0; i < flashCardArray.length; i++) {
         currentFlashCard = flashCardArray[i];
 
-        currentFlashCard.front = replaceNewlinesWithBr(currentFlashCard.front);
-        currentFlashCard.back = replaceNewlinesWithBr(currentFlashCard.back);
+        // currentFlashCard.front = replaceNewlinesWithBr(currentFlashCard.front);
+        // currentFlashCard.back = replaceNewlinesWithBr(currentFlashCard.back);
+        currentFlashCard.front = currentFlashCard.front;
+        currentFlashCard.back = currentFlashCard.back;
 
-        CSVFile += `${currentFlashCard.front}, ${currentFlashCard.back}\n`;
+        CSVFile += `\"${currentFlashCard.front}\",\"${currentFlashCard.back}\"\n`;
     }
 
 
@@ -233,7 +210,7 @@ function restoreData() {
         serverDataContainer = localStorage.getItem("flashCardArray");
         serverDataContainer = JSON.parse(serverDataContainer);
         flashCardArray = serverDataContainer;
-        
+
     }
 }
 
@@ -241,38 +218,68 @@ function restoreData() {
 function addRootFlashCardToPage() {
     let tableCellFront;
     let tableCellBack;
-    
     let frontInputCell;
     let backInputCell;
     let currentFlashCard;
-  
-    console.log(flashCardNumber);
-  
-  
-  
+    let flashCardNumberDisplay;
+    let utilityButton; //called this because later I'll add more features to it
+
+
+
+
     tableRow = document.createElement("tr");
     tableRow.classList.add("borderedElements");
     tableRow.addEventListener("keydown", newFlashCardShortCut);
     document.getElementById("tableContainer").appendChild(tableRow);
     tableRow.setAttribute("id", `flashCardTableRow0`);
-  
-  
-  
-  
+
+
+
+    flashCardNumberDisplay = document.createElement("div");  //change to span if needed
+    flashCardNumberDisplay.innerText = `${flashCardNumber + 1}`;  // +1 because we want to count our flashcards from 1 not 0, I could change the base way we slice ids, and count from 0 instead, but Im scared to break it
+    tableRow.appendChild(flashCardNumberDisplay);
+
+
+    utilityButton = document.createElement("button");
+    utilityButton.innerText = "utility button";
+    utilityButton.classList.add("utilityButtons")
+    utilityButton.id = `utilityButton${flashCardNumber}`
+    utilityButton.addEventListener("click", function copyForGPT(event) {
+        let utilityButtonNumber = event.target.id;
+        let flashCardNumber = utilityButtonNumber.slice(13)
+
+        let frontField = document.getElementById(`flashCardFrontNumber${flashCardNumber}`).value;
+        let backField = document.getElementById(`flashCardBackNumber${flashCardNumber}`).value;
+
+        let textToCopy = `Is the following flashcard true or false? : ${frontField} ${backField}`;
+        navigator.clipboard.writeText(textToCopy);
+
+
+        setTimeout(function () {
+            window.open("https://chat.openai.com/", "_blank");
+        }, 1);
+        // The above function is so that the window doesnt open instantly, since if it opens instantly the text wont be copied to the clipboard, the 1 represents 1 milisecond
+    });
+    tableRow.appendChild(utilityButton);
+
+
+
     // Creates the front table cell
     tableCellFront = document.createElement("td");
     tableCellFront.classList.add("borderedElements", "tableCells", "frontTabCell");
     tableRow.appendChild(tableCellFront);
-  
+
+
+
     // Creates the back table cell
     tableCellBack = document.createElement("td");
     tableCellBack.classList.add("borderedElements", "tableCells", "backTabCell");
     tableRow.appendChild(tableCellBack);
-  
+
     // It does this in case the flashCardArray contains cards saved to local storage
     currentFlashCard = flashCardArray[flashCardNumber];
-  
-  
+
+
     /* Creates the inputCell to put inside the front cell 
     Also sets the front inputCells to any saved flashcards*/
     frontInputCell = document.createElement("textarea");
@@ -280,10 +287,31 @@ function addRootFlashCardToPage() {
     frontInputCell.setAttribute("type", "text");
     frontInputCell.setAttribute("id", `flashCardFrontNumber${flashCardNumber}`);
     frontInputCell.addEventListener("input", modifyFlashCardArray);
+    frontInputCell.addEventListener("input", function newLineCharacterFormula(event) {
+        function countNewLines(str) {
+            let matches = str.match(/\n/g);
+            return matches ? matches.length : 0;
+        }
+
+
+        let frontInputCellValue = event.target.value;
+
+
+        let newLineCount = countNewLines(frontInputCellValue);
+
+        let expectedWidth = 0;
+        for (let i = 0; i < 100; i++) {
+
+        }
+
+
+
+
+    })
     frontInputCell.value = currentFlashCard.front;
     tableCellFront.appendChild(frontInputCell);
-  
-  
+
+
     /* Creates the inputCell to put inside the back cell 
     Also sets the back inputCells to any saved flashcards*/
     backInputCell = document.createElement("textarea");
@@ -293,32 +321,36 @@ function addRootFlashCardToPage() {
     backInputCell.addEventListener("input", modifyFlashCardArray);
     backInputCell.value = currentFlashCard.back;
     tableCellBack.appendChild(backInputCell);
+
+
+
+
     flashCardNumber++;
     tableRowNumber++;
-    
-  }
-  
-  
-  function newFlashCardShortCut(event) {
-  
+
+}
+
+
+function newFlashCardShortCut(event) {
+
     if (event.ctrlKey && event.code === 'Enter') {
-      addNewFlashCardToPage();
-  
-   
-  
-  
-  
-  
-  
-  
+        addNewFlashCardToPage();
+
+
+
+
+
+
+
+
     }
-  
-  }
-  
+
+}
 
 
-  
-  function addNewFlashCardToPage() {
+
+
+function addNewFlashCardToPage() {
     let tableCellFront;
     let tableCellBack;
     let tableRow;
@@ -329,32 +361,62 @@ function addRootFlashCardToPage() {
 
 
 
-  
-  
+
+
     tableRow = document.createElement("tr");
     tableRow.classList.add("borderedElements");
     tableRow.addEventListener("keydown", newFlashCardShortCut);
     document.getElementById("tableContainer").insertBefore(tableRow, document.getElementById(`flashCardTableRow${tableRowNumber}`));
-  
+
+
+
+    flashCardNumberDisplay = document.createElement("div");  //change to span if needed
+    flashCardNumberDisplay.innerText = `${flashCardNumber + 1}`;
+    tableRow.appendChild(flashCardNumberDisplay);
+
+    utilityButton = document.createElement("button");
+    utilityButton.innerText = "utility button";
+    utilityButton.classList.add("utilityButtons")
+    utilityButton.id = `utilityButton${flashCardNumber}`
+    utilityButton.addEventListener("click", function copyForGPT(event) {
+        let utilityButtonNumber = event.target.id;
+        let flashCardNumber = utilityButtonNumber.slice(13)
+
+        let frontField = document.getElementById(`flashCardFrontNumber${flashCardNumber}`).value;
+        let backField = document.getElementById(`flashCardBackNumber${flashCardNumber}`).value;
+
+        let textToCopy = `Is the following flashcard true or false? : ${frontField} ${backField}`;
+        navigator.clipboard.writeText(textToCopy);
+
+
+        setTimeout(function () {
+            window.open("https://chat.openai.com/", "_blank");
+        }, 1);
+        // The above function is so that the window doesnt open instantly, since if it opens instantly the text wont be copied to the clipboard, the 1 represents 1 milisecond
+    });
+    tableRow.appendChild(utilityButton);
+
+
+
     tableCellFront = document.createElement("td");
     tableCellFront.classList.add("borderedElements", "tableCells", "frontTabCell");
     tableRow.appendChild(tableCellFront);
-  
+
     tableCellBack = document.createElement("td");
     tableCellBack.classList.add("borderedElements", "tableCells", "backTabCell");
     tableRow.appendChild(tableCellBack);
-  
+
     // It does this in case the flashCardArray contains cards saved to local storage
 
-    if(flashCardArray[flashCardNumber] == undefined){
-        blankFlashCard = new flashCard("","");
+    if (flashCardArray[flashCardNumber] == undefined) {
+        blankFlashCard = new flashCard("", "");
         flashCardArray.push(blankFlashCard);
     }
-  
+
 
     currentFlashCard = flashCardArray[flashCardNumber];
 
-  
+
     /* Creates the inputCell to put inside the front cell 
     Also sets the front inputCells to any saved flashcards*/
     frontInputCell = document.createElement("textarea");
@@ -363,9 +425,13 @@ function addRootFlashCardToPage() {
     frontInputCell.setAttribute("id", `flashCardFrontNumber${flashCardNumber}`);
     frontInputCell.addEventListener("input", modifyFlashCardArray);
     frontInputCell.value = currentFlashCard.front;
+
+    frontInputCell.addEventListener('input', function() {
+        autoResize(frontInputCell);
+    }, false);
     tableCellFront.appendChild(frontInputCell);
-  
-  
+
+
     /* Creates the inputCell to put inside the back cell 
     Also sets the back inputCells to any saved flashcards*/
     backInputCell = document.createElement("textarea");
@@ -374,46 +440,63 @@ function addRootFlashCardToPage() {
     backInputCell.setAttribute("id", `flashCardBackNumber${flashCardNumber}`);
     backInputCell.addEventListener("input", modifyFlashCardArray);
     backInputCell.value = currentFlashCard.back;
+    backInputCell.addEventListener('input', function() {
+        autoResize(backInputCell);
+    }, false);
     tableCellBack.appendChild(backInputCell);
-  
-  
+
+
     document.getElementById(`flashCardFrontNumber${flashCardNumber}`).focus();
     flashCardNumber++;
     tableRowNumber++;
-   
-  
-  
-  }
-  
-  function modifyFlashCardArray(event) {
+
+
+
+}
+
+function modifyFlashCardArray(event) {
 
     let idNumber;
     let templateFlashCard = new flashCard();
-  
-  
-  
-  
-  
+
+
+
+
+
     if (this.id.includes("Front")) {
-      idNumber = this.id.slice(20);
-      templateFlashCard = flashCardArray[idNumber]; // this is so that we dont overwrite the back part of the card when we pass the templateFlashCard into the array
-      templateFlashCard.front = event.target.value; // take input text and sets it as the front of the flashcard
-      flashCardArray[idNumber] = templateFlashCard; // then finally pass the new flashcard into the array
-  
-  
+        idNumber = this.id.slice(20);
+        templateFlashCard = flashCardArray[idNumber]; // this is so that we dont overwrite the back part of the card when we pass the templateFlashCard into the array
+        templateFlashCard.front = event.target.value; // take input text and sets it as the front of the flashcard
+        flashCardArray[idNumber] = templateFlashCard; // then finally pass the new flashcard into the array
+
+
     }
     else if (this.id.includes("Back")) {
-      idNumber = this.id.slice(19);
-      templateFlashCard = flashCardArray[idNumber]; // this is so that we dont overwrite the front  part of the card when we pass the templateFlashCard into the array
-      templateFlashCard.back = event.target.value; // take input text and sets it as the front of the flashcard
-      flashCardArray[idNumber] = templateFlashCard;// then finally pass the new flashcard into the array
+        idNumber = this.id.slice(19);
+        templateFlashCard = flashCardArray[idNumber]; // this is so that we dont overwrite the front  part of the card when we pass the templateFlashCard into the array
+        templateFlashCard.back = event.target.value; // take input text and sets it as the front of the flashcard
+        flashCardArray[idNumber] = templateFlashCard;// then finally pass the new flashcard into the array
     }
-  
-  
-  
-  
-  }
-  
+
+
+
+
+}
+
+
+function createFlashCardTable() {
+    addRootFlashCardToPage();
+
+
+    for (let i = 0; i < flashCardArray.length; i++) {
+        testFlashCard = flashCardArray[i];
+        if (testFlashCard.front != "" || testFlashCard.back != "") {
+            addNewFlashCardToPage();
+        }
+
+
+    }
+}
 
 
 let flashCardArray;
@@ -424,26 +507,44 @@ let testFlashCard;
 createTopBar();
 createClearButton();
 createTableStructure();
-createDeleteFlashCardArrayButton()
-restoreData(); 
+restoreData();
+
+
+createFlashCardTable()
 
 
 
 
-addRootFlashCardToPage();
-
-
-for(let i = 0; i < flashCardArray.length; i++){
-    testFlashCard = flashCardArray[i];
-    if (testFlashCard.front != "" || testFlashCard.back != ""){
-    addNewFlashCardToPage();
-    }
-
-    
-}
 
 window.addEventListener("beforeunload", function (event) {
     // This block  makes it so that whenever you close the webpage, all the data gets saved
-  
+
     localStorage.setItem("flashCardArray", JSON.stringify(flashCardArray));
-  })
+})
+
+
+
+// gpt carried somewhat here :((((())))) but the rest of the features were mine bitch
+
+function autoResize(textarea) {
+    textarea.style.height = 'auto';
+    textarea.style.height = textarea.scrollHeight + 'px';
+
+
+
+
+
+}
+
+window.onload = function() {
+    var textareas = document.querySelectorAll('textarea');
+
+    
+
+    textareas.forEach(function(textarea) {
+        autoResize(textarea);
+        textarea.addEventListener('input', function() {
+            autoResize(textarea);
+        }, false);
+    });
+};
