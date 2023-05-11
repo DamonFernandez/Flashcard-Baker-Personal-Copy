@@ -63,7 +63,8 @@ function createClearButton() {
 
 
     clearButton.addEventListener("click", function () {
-        let promptAnswer = prompt("THIS WILL ERASE ALL OF YOUR CURRENT FLASHCARDS, IF YOU UNDERSTAND TYPE: \"I understand\"")
+        let promptAnswer = prompt(
+        `THIS WILL ERASE ALL OF YOUR CURRENT FLASHCARDS, IF YOU UNDERSTAND TYPE: \"I understand\" Note: This will also reload the webpage`)
         let templateFlashCard = new flashCard();
         templateFlashCard.front = "";
         templateFlashCard.back = "";
@@ -76,12 +77,14 @@ function createClearButton() {
             flashCardArray = newFlashCardArray;
             flashCardArray[0] = templateFlashCard;
 
-            let rootFlashCard = document.getElementById("flashCardTableRow0");
-            while (rootFlashCard.firstChild) {
-                rootFlashCard.removeChild(rootFlashCard.firstChild);
+            // let rootFlashCard = document.getElementById("flashCardTableRow0");
+            // while (rootFlashCard.firstChild) {
+            //     rootFlashCard.removeChild(rootFlashCard.firstChild);
 
-            }
+            // } 
+            // not needed anymore but leaving for now to make sure it doesnt bug
 
+            location.reload();
 
 
         }
