@@ -154,8 +154,8 @@ function createCSV(flashCardArray) {
 
         // currentFlashCard.front = replaceNewlinesWithBr(currentFlashCard.front);
         // currentFlashCard.back = replaceNewlinesWithBr(currentFlashCard.back);
-        currentFlashCard.front = currentFlashCard.front;
-        currentFlashCard.back = currentFlashCard.back;
+        currentFlashCard.front = formatQuotesForCSV(currentFlashCard.front);
+        currentFlashCard.back = formatQuotesForCSV(currentFlashCard.back);
 
         CSVFile += `\"${currentFlashCard.front}\",\"${currentFlashCard.back}\"\n`;
     }
@@ -164,6 +164,15 @@ function createCSV(flashCardArray) {
 
     return CSVFile;
 }
+
+function formatQuotesForCSV(flashCardText){
+
+    flashCardText = flashCardText.replace(/"/g, '""');
+
+
+    return flashCardText;
+}
+
 
 function downloadCSV(csv, filename) {
     // Downloads the CSV file to the computer
@@ -502,6 +511,8 @@ function createFlashCardTable() {
 }
 
 
+
+
 let flashCardArray;
 let flashCardNumber = 0;
 let tableRowNumber = 0;
@@ -551,3 +562,6 @@ window.onload = function() {
         }, false);
     });
 };
+
+
+// add a function that adds a quote next to each double quote in our flashcars values, to prevent csv fucking up the formating, this works just ask chat gpt
