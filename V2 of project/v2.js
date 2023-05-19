@@ -512,6 +512,12 @@ function createFlashCardTable() {
 
 
 
+function createTitleName(){
+    const titleName = document.createElement('h1')
+    titleName.classList.add('mainTitle')
+    titleName.innerText = 'DD'
+    document.body.appendChild(titleName);
+}
 
 let flashCardArray;
 let flashCardNumber = 0;
@@ -564,4 +570,9 @@ window.onload = function() {
 };
 
 
-// add a function that adds a quote next to each double quote in our flashcars values, to prevent csv fucking up the formating, this works just ask chat gpt
+
+
+// highlight the current thing youre on with blue
+// auto insert ? after each front card question when you download the csv
+// have an animation happen each time you make a new card, but make the animation cycle randomly through a set of possible animations
+// and let the user change font type with a drop down menu
