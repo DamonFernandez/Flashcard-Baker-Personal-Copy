@@ -4,7 +4,8 @@
 
 * {
     background-color: rgb(34, 40, 49);
-    font-family: 'Inconsolata', monospace,'Bebas Neue', cursive;
+    font-family: 'Courgette','Inconsolata', monospace,'Bebas Neue', cursive;
+    /* first font is just for fun for now */
     margin: 0;
     padding: 0;
 }
