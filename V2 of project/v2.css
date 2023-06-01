@@ -1,34 +1,81 @@
-/* .borderedElements{
-    border: solid 2px black;
-} */
 
 * {
-    background-color: rgb(34, 40, 49);
-    font-family: 'Courgette','Inconsolata', monospace,'Bebas Neue', cursive;
+    font-family: 'Courgette', 'Inconsolata', monospace, 'Bebas Neue', cursive;
     /* first font is just for fun for now */
     margin: 0;
     padding: 0;
 }
 
-.borderedElements{
 
-    color: white;
-
+body {
+    /* background-color: rgb(34, 40, 49); */
+    background-color: black;
+    background-image: url("bunny.jpg");
+    background-repeat: space;
 }
 
-.tableCells{
+.borderedElements {
+    color: white;
+}
+
+*:focus{
+    /* outline: solid 4px dodgerblue; */
+
+
+
+    /* outline: solid 4px #AA0033; */
+
+    outline: outset  4px hsl(240, 60%, 80%);
+
+
+
+    
+}
+
+
+
+/* *{
+    user-select: none;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+} */
+
+.tableCells {
     height: 40px;
     width: 40px;
+    opacity: 0;
+    animation-name: fadeIn;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+    animation-timing-function: ease-in-out;
+    transition: opacity 0.5s ease-in-out;
 }
 
 .topBarBtn {
     border: none;
-    background-color: rgb(0, 173, 181);
+    /* background-color: rgb(0, 173, 181); */
+    background-color: #1a1a1a;
+
+
     padding: 15px;
     gap: 10px;
     display: flex;
     flex: 1;
     justify-content: center;
+}
+
+.tableHeadings{
+    color:#E6E6FA;
+
+}
+
+
+.flashCardNumberDisplays{
+    font-size: 30px;
+    color:#E6E6FA;
+    
 }
 
 .titleTopBar {
@@ -40,7 +87,9 @@
 }
 
 .topButtons {
-    background-color: rgb(238, 238, 238);
+    background-color: #333333;
+    color:#E6E6FA;
+    /* background-color: rgb(238, 238, 238); */
     border: none;
     flex-grow: 1;
     font-weight: 700;
@@ -49,8 +98,10 @@
     font-size: 20px;
 }
 
-.utilityButtons{
-    background-color: rgb(238, 238, 238);
+.utilityButtons {
+    background-color: #333333;
+    color:#E6E6FA;
+    /* background-color: rgb(238, 238, 238); */
     border: none;
     font-weight: 700;
     text-transform: uppercase;
@@ -71,24 +122,79 @@
     justify-content: space-between;
 }
 
-.frontText, .backText {
+.frontText,
+.backText {
     padding-top: 10px;
     text-transform: uppercase;
     font-size: 30px;
     text-align: center;
 }
 
-.frontInpCell, .backInpCell {
+
+
+.frontInpCell,
+.backInpCell {
     font-size: 25px;
     resize: vertical;
     min-height: 50px;
     height: auto;
 
     width: 500px;
-    background-color: white;
+    /* background-color: white; */
+    background-color: #333333;
+    color:#E6E6FA;
+    resize: none;
+
+
+    /* box-shadow: 10px 5px 5px red; */
+    box-shadow: 10px 5px 5px #909090;
+    padding: 15px;
+    
+     /* box-shadow: 10px 5px 5px hsl(240, 60%, 80%); */
 }
 
-.frontTabCell, .backTabCell {
+.frontTabCell,
+.backTabCell {
     padding: 20px;
+    
 }
 
+
+
+
+@keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  .flashcardFadeIn {
+    opacity: 100;
+    animation-name: fadeIn;
+    animation-duration: 0.00001s;
+    animation-fill-mode: forwards;
+    animation-timing-function: ease-in-out;
+    transition: opacity 0.5s ease-in-out;
+    
+  }
+
+  .buttonFadeIn{
+    opacity: 0;
+    animation-name: fadeIn;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+    animation-timing-function: ease-in-out;
+    transition: opacity 0.5s ease-in-out;
+    
+  }
+  
+
+
+
+
+  
+
+  
