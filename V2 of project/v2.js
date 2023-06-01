@@ -17,6 +17,19 @@ function createTopBar() {
 
 
 
+    const openWebPagesButton = document.createElement("button");
+    openWebPagesButton.classList.add("topButtons");
+    openWebPagesButton.innerText = "Open the regular pages";
+    openWebPagesButton.addEventListener("click", function(){
+        open("https://chat.openai.com/");
+        open("https://codepen.io/pen/")
+        open("https://www.youtube.com/playlist?list=PLWoeSuhDPfxuetQNxpsbz1Za2zynhps02")
+        open("https://www.theodinproject.com/paths/full-stack-javascript?")
+        open("https://www.notion.so/Check-List-page-fe10d5635c4240a5a056649997890f4e")
+    })
+
+    divButtonContainer.appendChild(openWebPagesButton)
+
 
 
 
@@ -40,16 +53,16 @@ function createTopBar() {
     divButtonContainer.appendChild(downloadButton);
 
     // Save Button
-    const saveButton = document.createElement("button");
-    saveButton.classList.add("topButtons")
-    saveButton.innerText = "save";
-    saveButton.addEventListener("click", function () {
-        localStorage.setItem("flashCardArray", JSON.stringify(flashCardArray));
-        console.log(localStorage)
+    // const saveButton = document.createElement("button");
+    // saveButton.classList.add("topButtons")
+    // saveButton.innerText = "save";
+    // saveButton.addEventListener("click", function () {
+    //     localStorage.setItem("flashCardArray", JSON.stringify(flashCardArray));
+    //     console.log(localStorage)
 
-    })
+    // })
 
-    divButtonContainer.appendChild(saveButton);
+    // divButtonContainer.appendChild(saveButton);
 
 
 
@@ -59,12 +72,14 @@ function createTopBar() {
 function createClearButton() {
     const clearButton = document.createElement("button");
     clearButton.innerText = "clear all flashcards";
+    clearButton.classList.add("topButtons");
+
 
 
 
     clearButton.addEventListener("click", function () {
         let promptAnswer = prompt(
-        `THIS WILL ERASE ALL OF YOUR CURRENT FLASHCARDS, IF YOU UNDERSTAND TYPE: \"I understand\" Note: This will also reload the webpage`)
+            `THIS WILL ERASE ALL OF YOUR CURRENT FLASHCARDS, IF YOU UNDERSTAND TYPE: \"I understand\" Note: This will also reload the webpage`)
         let templateFlashCard = new flashCard();
         templateFlashCard.front = "";
         templateFlashCard.back = "";
@@ -104,7 +119,7 @@ function createTableStructure() {
     // Creates all the parts of the table that dont include the actual cells themselves
 
     const divTableContainer = document.createElement("div");
-    divTableContainer.classList.add("borderedElements", 'tabContainer');
+    divTableContainer.classList.add("borderedElements", 'tabContainer', 'flashcardFadeIn');
     document.body.appendChild(divTableContainer);
 
 
@@ -115,26 +130,31 @@ function createTableStructure() {
     divTableContainer.appendChild(tableContainer);
 
 
+
+
     const headingTableRow = document.createElement("tr");
     headingTableRow.classList.add("borderedElements");
     tableContainer.appendChild(headingTableRow);
 
 
     const frontTableHeading = document.createElement("th");
-    frontTableHeading.classList.add("borderedElements", 'frontText');
+    frontTableHeading.classList.add("borderedElements", 'frontText', "tableHeadings");
     frontTableHeading.innerHTML = "Front";
+
     headingTableRow.appendChild(frontTableHeading);
 
-    const backTableHeading = document.createElement("th");
-    backTableHeading.classList.add("borderedElements", 'backText');
-    backTableHeading.innerHTML = "Back";
-    headingTableRow.appendChild(backTableHeading);
+    // const backTableHeading = document.createElement("th");
+    // backTableHeading.classList.add("borderedElements", 'backText', "tableHeadings");
+    // backTableHeading.innerHTML = "Back";
+    // headingTableRow.appendChild(backTableHeading);
 }
 
 function flashCard(front, back) {
     this.front = front;
     this.back = back;
 }
+
+
 
 
 
@@ -157,7 +177,21 @@ function createCSV(flashCardArray) {
         currentFlashCard.front = formatQuotesForCSV(currentFlashCard.front);
         currentFlashCard.back = formatQuotesForCSV(currentFlashCard.back);
 
+
         CSVFile += `\"${currentFlashCard.front}\",\"${currentFlashCard.back}\"\n`;
+        // if (currentFlashCard.front.includes("?") && currentFlashCard.front != "") {
+        //     CSVFile += `\"${currentFlashCard.front}\",\"${currentFlashCard.back}\"\n`;
+
+        // }
+
+        // else if (currentFlashCard.front.trim() != "") {
+        //     CSVFile += `\"${currentFlashCard.front}?\",\"${currentFlashCard.back}\"\n`;
+
+        // }
+        // The above auto adds question marks to the end of questions if you want that that
+
+
+
     }
 
 
@@ -165,7 +199,7 @@ function createCSV(flashCardArray) {
     return CSVFile;
 }
 
-function formatQuotesForCSV(flashCardText){
+function formatQuotesForCSV(flashCardText) {
 
     flashCardText = flashCardText.replace(/"/g, '""');
 
@@ -249,13 +283,19 @@ function addRootFlashCardToPage() {
 
     flashCardNumberDisplay = document.createElement("div");  //change to span if needed
     flashCardNumberDisplay.innerText = `${flashCardNumber + 1}`;  // +1 because we want to count our flashcards from 1 not 0, I could change the base way we slice ids, and count from 0 instead, but Im scared to break it
+
+    flashCardNumberDisplay.classList.add("flashCardNumberDisplays");
+
     tableRow.appendChild(flashCardNumberDisplay);
 
 
     utilityButton = document.createElement("button");
     utilityButton.innerText = "utility button";
-    utilityButton.classList.add("utilityButtons")
-    utilityButton.id = `utilityButton${flashCardNumber}`
+    utilityButton.classList.add("utilityButtons");
+    utilityButton.id = `utilityButton${flashCardNumber}`;
+    utilityButton.tabIndex = "-1";
+
+
     utilityButton.addEventListener("click", function copyForGPT(event) {
         let utilityButtonNumber = event.target.id;
         let flashCardNumber = utilityButtonNumber.slice(13)
@@ -267,9 +307,9 @@ function addRootFlashCardToPage() {
         navigator.clipboard.writeText(textToCopy);
 
 
-        setTimeout(function () {
-            window.open("https://chat.openai.com/", "_blank");
-        }, 1);
+        // setTimeout(function () {
+        //     window.open("https://chat.openai.com/", "_blank");
+        // }, 1);
         // The above function is so that the window doesnt open instantly, since if it opens instantly the text wont be copied to the clipboard, the 1 represents 1 milisecond
     });
     tableRow.appendChild(utilityButton);
@@ -299,27 +339,7 @@ function addRootFlashCardToPage() {
     frontInputCell.setAttribute("type", "text");
     frontInputCell.setAttribute("id", `flashCardFrontNumber${flashCardNumber}`);
     frontInputCell.addEventListener("input", modifyFlashCardArray);
-    frontInputCell.addEventListener("input", function newLineCharacterFormula(event) {
-        function countNewLines(str) {
-            let matches = str.match(/\n/g);
-            return matches ? matches.length : 0;
-        }
 
-
-        let frontInputCellValue = event.target.value;
-
-
-        let newLineCount = countNewLines(frontInputCellValue);
-
-        let expectedWidth = 0;
-        for (let i = 0; i < 100; i++) {
-
-        }
-
-
-
-
-    })
     frontInputCell.value = currentFlashCard.front;
     tableCellFront.appendChild(frontInputCell);
 
@@ -376,7 +396,7 @@ function addNewFlashCardToPage() {
 
 
     tableRow = document.createElement("tr");
-    tableRow.classList.add("borderedElements");
+    tableRow.classList.add("borderedElements", 'flashcardFadeIn');
     tableRow.addEventListener("keydown", newFlashCardShortCut);
     document.getElementById("tableContainer").insertBefore(tableRow, document.getElementById(`flashCardTableRow${tableRowNumber}`));
 
@@ -384,12 +404,18 @@ function addNewFlashCardToPage() {
 
     flashCardNumberDisplay = document.createElement("div");  //change to span if needed
     flashCardNumberDisplay.innerText = `${flashCardNumber + 1}`;
+    flashCardNumberDisplay.classList.add("flashCardNumberDisplays", 'buttonFadeIn');
     tableRow.appendChild(flashCardNumberDisplay);
 
     utilityButton = document.createElement("button");
     utilityButton.innerText = "utility button";
-    utilityButton.classList.add("utilityButtons")
+    utilityButton.classList.add("utilityButtons", 'buttonFadeIn')
     utilityButton.id = `utilityButton${flashCardNumber}`
+    utilityButton.tabIndex = "-1";
+
+
+   
+
     utilityButton.addEventListener("click", function copyForGPT(event) {
         let utilityButtonNumber = event.target.id;
         let flashCardNumber = utilityButtonNumber.slice(13)
@@ -401,11 +427,14 @@ function addNewFlashCardToPage() {
         navigator.clipboard.writeText(textToCopy);
 
 
-        setTimeout(function () {
-            window.open("https://chat.openai.com/", "_blank");
-        }, 1);
-        // The above function is so that the window doesnt open instantly, since if it opens instantly the text wont be copied to the clipboard, the 1 represents 1 milisecond
+
+
+        // setTimeout(function () {
+        //     window.open("https://chat.openai.com/", "_blank");
+        // }, 1);
     });
+
+        // The above function is so that the window doesnt open instantly, since if it opens instantly the text wont be copied to the clipboard, the 1 represents 1 milisecond
     tableRow.appendChild(utilityButton);
 
 
@@ -438,7 +467,7 @@ function addNewFlashCardToPage() {
     frontInputCell.addEventListener("input", modifyFlashCardArray);
     frontInputCell.value = currentFlashCard.front;
 
-    frontInputCell.addEventListener('input', function() {
+    frontInputCell.addEventListener('input', function () {
         autoResize(frontInputCell);
     }, false);
     tableCellFront.appendChild(frontInputCell);
@@ -452,7 +481,7 @@ function addNewFlashCardToPage() {
     backInputCell.setAttribute("id", `flashCardBackNumber${flashCardNumber}`);
     backInputCell.addEventListener("input", modifyFlashCardArray);
     backInputCell.value = currentFlashCard.back;
-    backInputCell.addEventListener('input', function() {
+    backInputCell.addEventListener('input', function () {
         autoResize(backInputCell);
     }, false);
     tableCellBack.appendChild(backInputCell);
@@ -512,7 +541,7 @@ function createFlashCardTable() {
 
 
 
-function createTitleName(){
+function createTitleName() {
     const titleName = document.createElement('h1')
     titleName.classList.add('mainTitle')
     titleName.innerText = 'DD'
@@ -556,14 +585,14 @@ function autoResize(textarea) {
 
 }
 
-window.onload = function() {
+window.onload = function () {
     var textareas = document.querySelectorAll('textarea');
 
-    
 
-    textareas.forEach(function(textarea) {
+
+    textareas.forEach(function (textarea) {
         autoResize(textarea);
-        textarea.addEventListener('input', function() {
+        textarea.addEventListener('input', function () {
             autoResize(textarea);
         }, false);
     });
@@ -571,8 +600,57 @@ window.onload = function() {
 
 
 
+window.addEventListener('beforeunload', function(event) {
+    // Custom message to display
+    var confirmationMessage = 'Unload your flashcards, otherwise this shit will overwhelm you';
 
-// highlight the current thing youre on with blue
-// auto insert ? after each front card question when you download the csv
+
+    alert(confirmationMessage)
+    // Display the confirmation message
+    (event || window.event).returnValue = confirmationMessage;
+    return confirmationMessage;
+  });
+  
+
+
+
+// add a third column for copy and pasting code, and just make the card type include a 3rd column
+
+
 // have an animation happen each time you make a new card, but make the animation cycle randomly through a set of possible animations
 // and let the user change font type with a drop down menu
+
+
+//use anki API to make adding cards seamless, and maybe figure out how to add images to cards with this API
+
+
+// for skins, just change the stylesheet used with js, and do this by having a button at the top that the user can click to change the current colour scheme
+
+/* 
+"Can we change the stylesheet a page is using with JS
+ChatGPT
+Yes, you can change the stylesheet a page is using with JavaScript. One way to achieve this is by manipulating the DOM (Document Object Model) to add, remove, or modify the <link> elements that reference the stylesheets.
+
+Here's an example of how you can change the stylesheet using JavaScript:
+
+javascript
+Copy code
+// Create a new <link> element
+const newStylesheet = document.createElement('link');
+newStylesheet.rel = 'stylesheet';
+newStylesheet.href = 'path/to/new_stylesheet.css';
+
+// Find the existing <link> element
+const existingStylesheet = document.querySelector('link[href="path/to/old_stylesheet.css"]');
+
+// Replace the existing <link> element with the new one
+existingStylesheet.parentNode.replaceChild(newStylesheet, existingStylesheet);
+In the above example, we create a new <link> element with the desired stylesheet URL. Then, we find the existing <link> element that references the old stylesheet, using querySelector(). Finally, we replace the existing <link> element with the new one using the replaceChild() method.
+
+By executing this JavaScript code, you can dynamically change the stylesheet of a page, effectively updating the styles applied to the elements on that page.
+
+Note that this approach assumes you have control over the HTML structure and the ability to modify the DOM. If you're working with a third-party website or a content management system, the process of changing the stylesheet might vary depending on the specific framework or platform in use." */
+
+
+
+
