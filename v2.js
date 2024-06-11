@@ -354,7 +354,7 @@ function addRootFlashCardToPage() {
 }
 
 function newFlashCardShortCut(event) {
-  if (event.metaKey || (event.ctrlKey && event.code === "Enter")) {
+  if (event.ctrlKey && event.code === "Enter") {
     addNewFlashCardToPage();
   }
 }
