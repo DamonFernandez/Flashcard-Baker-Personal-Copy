@@ -105,6 +105,60 @@ function createTopBar() {
 
   // divButtonContainer.appendChild(saveButton);
 }
+
+function createImportFilePicker() {
+  const CSV_FILE_PICKER = document.createElement("input");
+  CSV_FILE_PICKER.type = "file";
+  CSV_FILE_PICKER.id = "CSVFilePicker";
+  let buttonContainer = document.getElementById("buttonContainer");
+  buttonContainer.append(CSV_FILE_PICKER);
+}
+
+function createImportButton() {
+  const importButton = document.createElement("button");
+  importButton.innerText = "IMPORT";
+  importButton.classList.add("topButtons");
+
+  importButton.addEventListener("click", async () => {
+    const CSV_FILE_PICKER = document.getElementById("CSVFilePicker");
+    const file = CSV_FILE_PICKER.files[0];
+    console.assert(file, "File is not present in file picker");
+    if (file) {
+      const ROWS = await readCSVFile(file);
+      flashCardArray = usingCSVContentCreateFlashCardArray(ROWS);
+      location.reload();
+    }
+  });
+  let buttonContainer = document.getElementById("buttonContainer");
+  buttonContainer.append(importButton);
+}
+
+function usingCSVContentCreateFlashCardArray(CSVContent) {
+  let tempArray = [];
+  CSVContent.forEach((row) => {
+    let flashCardTemplate = new flashCard();
+    flashCardTemplate.front = row[0];
+    flashCardTemplate.back = row[1];
+    tempArray.push(flashCardTemplate);
+  });
+  return tempArray;
+}
+
+let readCSVFile = async (file) => {
+  return new Promise((resolve, reject) => {
+    const FILE_READER = new FileReader();
+
+    FILE_READER.onload = (ev) => {
+      const FILE_CONTENT = ev.target.result;
+      // console.log("CSV content", FILE_CONTENT);
+      const ROWS = FILE_CONTENT.split("\n").map((row) => row.split(","));
+      ROWS.pop();
+      console.table(ROWS);
+      resolve(ROWS);
+    };
+    FILE_READER.readAsText(file);
+  });
+};
 function createClearButton() {
   const clearButton = document.createElement("button");
   clearButton.innerText = "clear all flashcards";
@@ -564,6 +618,8 @@ window.addEventListener("beforeunload", function (event) {
   return confirmationMessage;
 });
 
+createImportFilePicker();
+createImportButton();
 // add a third column for copy and pasting code, and just make the card type include a 3rd column
 
 // have an animation happen each time you make a new card, but make the animation cycle randomly through a set of possible animations
