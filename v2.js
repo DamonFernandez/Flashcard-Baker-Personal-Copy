@@ -137,7 +137,7 @@ function usingCSVContentCreateFlashCardArray(CSVContent) {
   let tempArray = [];
   CSVContent.forEach((row) => {
     let flashCardTemplate = new flashCard();
-    flashCardTemplate.front = row[0];
+    flashCardTemplate.front = row[0].trim("");
     flashCardTemplate.back = row[1];
     tempArray.push(flashCardTemplate);
   });
